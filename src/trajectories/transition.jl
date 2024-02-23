@@ -114,7 +114,7 @@ function transitions(sys::StochSystem, x_i::State, x_f::State, N=1;
     rad_dims=1:length(sys.u),
     savefile=nothing,
     output_level=1,
-    showprogress::Bool=false
+    showprogress::Bool=false,
     kwargs...)
     """
     Generates N transition samples of sys from x_i to x_f.
