@@ -18,18 +18,19 @@ For more info, see [`SDEProblem`](https://diffeq.sciml.ai/stable/types/sde_types
 
 > Warning: This function has only been tested for the `EM()` solver and out-of-place `SDEFunction`s.
 """
-function simulate(sys::StochSystem, init::State;
-    dt=0.01,
-    tmax=1e3,
-    solver=EM(),
-    callback=nothing,
-    showprogress=false,
-    kwargs...)
+function simulate(sys::StochSystem, init;
+        dt = 0.01,
+        tmax = 1e3,
+        solver = EM(),
+        callback = nothing,
+        showprogress=false,
+        iip = is_iip(sys.f),
+        kwargs...)
 
-    prob = SDEProblem(sys.f, σg(sys), init, (0, tmax), p(sys), noise=stochprocess(sys))
-    solve(prob, solver; dt=dt, callback=callback, progress=showprogress, kwargs...)
-end;
-
+    prob = SDEProblem{iip}(
+        sys.f, σg(sys), init, (0, tmax), p(sys), noise = stochprocess(sys))
+    solve(prob, solver; dt = dt, callback = callback, progress = showprogress, kwargs...)
+end
 """
     relax(sys::StochSystem, init::State; kwargs...)
 Simulates the deterministic dynamics of StochSystem `sys` in time, starting at initial condition `init`.
@@ -53,8 +54,9 @@ function relax(sys::StochSystem, init::State;
     tmax=1e3,
     solver=Euler(),
     callback=nothing,
+    iip = is_iip(sys.f),
     kwargs...)
 
-    prob = ODEProblem(sys.f, init, (0, tmax), p(sys))
+    prob = ODEProblem{iip}(sys.f, init, (0, tmax), p(sys))
     solve(prob, solver; dt=dt, callback=callback, kwargs...)
 end;
