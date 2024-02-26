@@ -1,3 +1,5 @@
+import DynamicalSystems: CoupledODEs
+
 # Define custom types
 Parameters = Union{Vector{Any}, Nothing};
 CovMatrix = Union{Matrix, UniformScaling{Bool}, Diagonal{Bool, Vector{Bool}}};
@@ -48,8 +50,8 @@ end
 Concatenates the deterministic and stochastic parameter vectors `pf` and `pg` of a StochSystem `sys`.
 """
 function p(sys::StochSystem)
-    [sys.pf, sys.pg]
-end;
+    isnothing(sys.pg) ? sys.pf : [sys.pf, sys.pg]
+end
 
 """
     CoupledODEs(sys::StochSystem; diffeq, t0=0.0)
