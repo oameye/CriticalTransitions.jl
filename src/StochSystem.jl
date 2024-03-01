@@ -12,6 +12,7 @@ Defines a stochastic dynamical system in `CriticalTransitions.jl`. See [document
 """
 struct StochSystem
     f::Function
+    J::Union{Function, Nothing}
     pf::Parameters
     u::State
     σ::Float64
@@ -22,10 +23,9 @@ struct StochSystem
 end;
 
 # Methods of StochSystem
-StochSystem(f, pf, u) = StochSystem(f, pf, u, 0.0, idfunc, nothing, I(length(u)), "WhiteGauss")
-StochSystem(f, pf, u, σ) = StochSystem(f, pf, u, σ, idfunc, nothing, I(length(u)), "WhiteGauss")
-StochSystem(f, pf, u, σ, Σ) = StochSystem(f, pf, u, σ, idfunc, nothing, Σ, "WhiteGauss")
-
+function StochSystem(f, pf, u, σ=0.0, Σ = I(length(u)), J=nothing)
+    StochSystem(f, J, pf, u, σ, idfunc, nothing, Σ, "WhiteGauss")
+end
 # Core functions acting on StochSystem
 """
     drift(sys::StochSystem, x::State)
@@ -69,4 +69,4 @@ Converts a [`CoupledODEs`](https://juliadynamics.github.io/DynamicalSystems.jl/s
 system into a [`StochSystem`](@ref).
 """
 StochSystem(ds::DynamicalSystemsBase.CoupledODEs; σ=0.0, g=idfunc, pg=nothing, Σ=I(length(get_state(ds))), process="WhiteGauss") =
-StochSystem(dynamic_rule(ds), [ds.p0], get_state(ds), σ, g, pg, Σ, process)
+StochSystem(dynamic_rule(ds), nothing, [ds.p0], get_state(ds), σ, g, pg, Σ, process)
