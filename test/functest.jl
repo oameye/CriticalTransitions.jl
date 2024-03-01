@@ -4,12 +4,12 @@ Run this file to see whether any functions throw an error
 """
 
 include("../src/CriticalTransitions.jl")
-using .CriticalTransitions
+using CriticalTransitions
 
 # Set up an example system
 p = [1., 3., 1., 1., 1., 0.];
-sys = StochSystem(fitzhugh_nagumo, p, zeros(2), 0.2, idfunc, nothing, I(2), "WhiteGauss")
-sys! = StochSystem(fitzhugh_nagumo!, p, zeros(2), 0.3, idfunc!, nothing, I(2), "WhiteGauss")
+sys = StochSystem(fitzhugh_nagumo, nothing, p, zeros(2), 0.2, idfunc, nothing, I(2), "WhiteGauss")
+sys! = StochSystem(fitzhugh_nagumo!, nothing, p, zeros(2), 0.3, idfunc!, nothing, I(2), "WhiteGauss")
 # Check functions
 ds = CoupledODEs(sys)
 StochSystem(ds)
