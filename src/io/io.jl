@@ -30,14 +30,15 @@ Prints StochSystem info of `sys` in structured format.
 """
 function sys_info(sys::StochSystem)
 printfmt("{:}-dimensional stochastic dynamical system
- - f (deterministic function):  {:}
- - pf (parameters of f):        {:}
- - g (noise function):          {:}
- - pg (parameters of g):        {:}
- - σ (noise intensity):         {:.3e}
- - Σ (covariance matrix):       {:}
- - process (noise process):     {:}", length(sys.u), sys.f, sys.pf, sys.g, sys.pg, sys.σ, sys.Σ,
- sys.process)
+ - f (deterministic function):          {:}
+ - jacobian (deterministic function):   {:}
+ - pf (parameters of f):                {:}
+ - g (noise function):                  {:}
+ - pg (parameters of g):                {:}
+ - σ (noise intensity):                 {:.3e}
+ - Σ (covariance matrix):               {:}
+ - process (noise process):             {:}",
+ length(sys.u), sys.J, sys.f, sys.pf, sys.g, sys.pg, sys.σ, sys.Σ, sys.process)
 end;
 
 """
@@ -45,7 +46,7 @@ end;
 Returns StochSystem info of `sys` as a string.
 
 ## Keyword arguments
-`verbose`: if true, the string includes additional descriptions. 
+`verbose`: if true, the string includes additional descriptions.
 """
 function sys_string(sys::StochSystem; verbose=true)
     if verbose
@@ -66,6 +67,7 @@ additional_details(::StochSystem) = []
 function Base.show(io::IO, ::MIME"text/plain", sys::StochSystem)
     descriptors = [
         "f (deterministic function)" => sys.f,
+        "jacobian (deterministic function)" => sys.J,
         "pf (parameters of f)" => sys.pf,
         "g (noise function)" => sys.g,
         "pg (parameters of g)" => sys.pg,
