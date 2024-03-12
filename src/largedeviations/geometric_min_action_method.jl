@@ -60,7 +60,8 @@ function geometric_min_action_method(sys::StochSystem, init::Matrix, arclength =
         tau = 0.1,
         verbose=true,
         showprogress=false,
-        save_info=false)
+        save_info=false,
+        options = Optim.Options(iterations = 1))
     println("=== Initializing gMAM action minimizer ===")
 
     A = inv(sys.Σ)
@@ -81,7 +82,7 @@ function geometric_min_action_method(sys::StochSystem, init::Matrix, arclength =
             # update_path = heymann_vandeneijnden_step(sys, path, N, arclength;
             # tau = tau, cov_inv = A)
         else
-            update = Optim.optimize(S, path, method, Optim.Options(iterations = 1))
+            update = Optim.optimize(S, path, method, options)
             update_path = Optim.minimizer(update)
         end
 
