@@ -59,7 +59,8 @@ function geometric_min_action_method(sys::StochSystem, init::Matrix, arclength =
         method = LBFGS(),
         tau = 0.1,
         verbose=true,
-        showprogress=false)
+        showprogress=false,
+        save_info=false)
     println("=== Initializing gMAM action minimizer ===")
 
     A = inv(sys.Σ)
@@ -86,16 +87,20 @@ function geometric_min_action_method(sys::StochSystem, init::Matrix, arclength =
 
         # re-interpolate
         path = interpolate_path(update_path, sys, N, arclength)
-        push!(paths, path)
-        push!(action, S(path))
+        save_info && push!(paths, path)
+        save_info && push!(action, S(path))
 
-        if abs(action[end] - action[end - 1]) < converge
+        if abs(action[end] - action[end - 1])/action[end] < converge
             println("Converged after $(i) iterations.")
+            push!(paths, path)
+            push!(action, S(path))
             return paths, action
             break
         end
     end
     verbose && @warn("Stopped after reaching maximum number of $(maxiter) iterations.")
+    push!(paths, path)
+    push!(action, S(path))
     paths, action
 end
 
