@@ -10,8 +10,10 @@ bib = CitationBibliography(
 makedocs(;
     sitename="CriticalTransitions.jl",
     doctest=false,
-    format = Documenter.HTML(prettyurls = get(ENV, "CI", nothing) == "true",
-        mathengine = Documenter.MathJax2()),
+    format = Documenter.HTML(
+        prettyurls = true, # https://documenter.juliadocs.org/stable/man/guide/#Package-Guide
+        mathengine = Documenter.MathJax2()
+        ),
     warnonly = [:doctest, :missing_docs],
     pages=Any[
         "Home" => "index.md",
